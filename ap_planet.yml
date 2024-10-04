@@ -1,0 +1,21 @@
+---
+- name: Kết nối và quản lý AP Planet
+  hosts: planet_aps
+  gather_facts: no
+  connection: network_cli
+  tasks:
+    - name: Kiểm tra kết nối đến AP Planet
+      command: show version
+      register: version_info
+
+    - name: Hiển thị thông tin phiên bản AP Planet
+      debug:
+        var: version_info.stdout_lines
+
+    - name: Lấy cấu hình hiện tại của AP Planet
+      command: show running-config
+      register: running_config
+
+    - name: Hiển thị cấu hình hiện tại
+      debug:
+        var: running_config.stdout_lines
