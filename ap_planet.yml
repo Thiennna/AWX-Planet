@@ -1,21 +1,22 @@
 ---
-- name: Kết nối và quản lý AP Planet
-  hosts: planet_aps
+- name: Kiểm tra cấu hình AP Planet qua HTTP API
+  hosts: all
   gather_facts: no
-  connection: network_cli
+  vars:
+    api_endpoint: "/api/get-config"  # Thay đổi endpoint này tùy thuộc vào API của AP
+    ap_ip: "192.168.10.62"
   tasks:
-    - name: Kiểm tra kết nối đến AP Planet
-      command: show version
-      register: version_info
+    - name: Gửi yêu cầu kiểm tra cấu hình từ AP Planet qua Web UI
+      uri:
+        url: "http://{{ ap_ip }}{{ api_endpoint }}"
+        method: GET
+        user: "ringnet"  # Thay đổi với tên người dùng của bạn
+        password: "Ringnet@123"  # Thay đổi với mật khẩu của bạn
+        force_basic_auth: yes
+        validate_certs: no
+      register: config_response
 
-    - name: Hiển thị thông tin phiên bản AP Planet
+    - name: Hiển thị cấu hình của AP Planet
       debug:
-        var: version_info.stdout_lines
+        var: config_response.json
 
-    - name: Lấy cấu hình hiện tại của AP Planet
-      command: show running-config
-      register: running_config
-
-    - name: Hiển thị cấu hình hiện tại
-      debug:
-        var: running_config.stdout_lines
