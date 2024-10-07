@@ -1,0 +1,7 @@
+---
+- name: Ping AP Planet
+  hosts: all
+  gather_facts: no
+  tasks:
+    - name: Kiểm tra kết nối tới AP
+      ping:
